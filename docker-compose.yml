@@ -1,0 +1,29 @@
+services:
+  kestra:
+    image: kestra/kestra:latest-full
+    container_name: kestra
+    command: server standalone
+    ports:
+      - "8080:8080"
+    environment:
+      KESTRA_PLUGINS: |
+        io.kestra.plugin:scripts-shell
+        io.kestra.plugin:scripts-python
+      KESTRA_CONFIGURATION: |
+        kestra:
+          server:
+            authentication:
+              enabled: false
+          repository:
+            type: memory
+          queue:
+            type: memory
+          storage:
+            type: local
+            local:
+              base-path: /app/storage
+          plugins:
+            path: /app/plugins
+    volumes:
+      - ./kestra-storage:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock   # 👈 THIS LINE
